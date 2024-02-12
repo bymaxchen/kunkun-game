@@ -107,7 +107,6 @@ namespace Shard
 
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W) {
                     IsJumping = true;
-                    jumpDirction = new Vector2(0, -1);
                     MyBody.stopForces();
                     MyBody.addForce(new Vector2(0, -1), 3);
                 }
