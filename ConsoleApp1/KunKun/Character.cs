@@ -11,6 +11,8 @@ namespace Shard
 {
     class Character : GameObject, CollisionHandler
     {
+        public Vector2 jumpDirction { get; set; }
+        public bool IsJumping { get; set; }
         public float speed = 5.0f; // Adjust speed as needed
         private bool facingRight = true;
 
@@ -26,10 +28,16 @@ namespace Shard
 
             this.Transform.X = 100.0f;
             this.Transform.Y = 818.0f;
-            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("heizi.png");
 
             setPhysicsEnabled();
 
+            MyBody.Mass = 1;
+            MyBody.MaxForce = 15;
+            MyBody.Drag = 0f;
+            MyBody.UsesGravity = true;
+            MyBody.StopOnCollision = true;
+
+            this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("heizi.png");
             MyBody.addRectCollider();
 
             addTag("Character");
@@ -37,6 +45,8 @@ namespace Shard
 
         public void move(float deltaX)
         {
+            if (IsJumping) return;
+
             if (deltaX > 0 && !facingRight)
             {
                 Flip();
@@ -45,7 +55,7 @@ namespace Shard
             {
                 Flip();
             }
-            this.Transform.X += deltaX;
+            this.Transform.translate(deltaX, 0);
         }
 
         private void Flip()
@@ -55,7 +65,8 @@ namespace Shard
             {
                 this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("heizi.png");
             }
-            else {
+            else
+            {
                 this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("heizi-reverse.png");
             }
         }
@@ -63,6 +74,10 @@ namespace Shard
         public override void update()
         {
             Bootstrap.getDisplay().addToDraw(this);
+        }
+
+        public override void physicsUpdate()
+        {
         }
 
 
@@ -73,10 +88,12 @@ namespace Shard
                 return;
             }
 
+            if (IsJumping) return;
+
             if (eventType == "KeyDown")
             {
 
-                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
+                if ( inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
                 {
                     this.move(speed);
                     background.updateBackgroundPosition(this);
@@ -88,13 +105,20 @@ namespace Shard
                     background.updateBackgroundPosition(this);
                 }
 
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W) {
+                    IsJumping = true;
+                    jumpDirction = new Vector2(0, -1);
+                    MyBody.stopForces();
+                    MyBody.addForce(new Vector2(0, -1), 3);
+                }
+
             }
 
         }
 
         public void onCollisionEnter(PhysicsBody x)
         {
-
+            IsJumping = false;
         }
 
         public void onCollisionExit(PhysicsBody x)

@@ -11,6 +11,7 @@ namespace Shard
     {
         private Character character;
         private Background background;
+        private Ground ground;
         public override void update()
         {
 
@@ -27,6 +28,7 @@ namespace Shard
         {
             background = new Background();
             character = new Character();
+            ground = new Ground();
            
             Bootstrap.getInput().addListener(this);
         }
