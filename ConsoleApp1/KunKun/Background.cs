@@ -8,29 +8,51 @@ namespace Shard
 {
     class Background : GameObject
     {
+        public float witdh { get; set; }
         public override void initialize()
         {
 
             this.Transform.X = 0f;
             this.Transform.Y = 0f;
+            this.witdh = 1920;
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("background-test.jpg");
 
 
             addTag("Background");
         }
 
+        public bool isLastScreen() {
+            int screenWidth = Bootstrap.getDisplay().getWidth();
+            if (this.witdh + this.Transform.X <= screenWidth)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public void updateBackgroundPosition(Character character)
         {
-            // Check character movement direction
-            if (character.isFacingRight)
+            int screenWidth = Bootstrap.getDisplay().getWidth();
+
+            Debug.Log("background x: {}" + this.Transform.X);
+            Debug.Log("character x: {}" + character.Transform.X);
+
+            if (this.isLastScreen())
             {
-                this.Transform.X -= character.speed * 1.5f;
+                return;
             }
-            else if (!character.isFacingRight)
+
+            if (character.isFacingRight && character.reachRightScreen())
             {
-                this.Transform.X += character.speed * 1.5f;
+                this.Transform.X -= character.speed;
             }
         }
+
+
+
+
+
 
 
         public override void update()

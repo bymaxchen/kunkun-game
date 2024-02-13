@@ -15,6 +15,7 @@ namespace Shard
         public bool IsJumping { get; set; }
         public float speed = 5.0f; // Adjust speed as needed
         private bool facingRight = true;
+        private int width = 128;
 
         public bool isFacingRight
         {
@@ -43,7 +44,16 @@ namespace Shard
             addTag("Character");
         }
 
-        public void move(float deltaX)
+        // To judge if the center of charcter is located at the right screen
+        public Boolean reachRightScreen() {
+            int screenWidth = Bootstrap.getDisplay().getWidth();
+            if (this.Transform.X + this.width / 2 >= screenWidth / 2) { 
+                return true;
+            }
+            return false; 
+        }
+
+        public void move(float deltaX, Background background)
         {
             if (IsJumping) return;
 
@@ -55,7 +65,19 @@ namespace Shard
             {
                 Flip();
             }
-            this.Transform.translate(deltaX, 0);
+
+            if (!facingRight && this.Transform.X <= 0) {
+                return;
+            }
+
+            if (facingRight && background.isLastScreen() && this.Transform.X <= Bootstrap.getDisplay().getWidth() - this.width)
+            {
+                this.Transform.translate(deltaX, 0);
+            }
+
+            if ((!facingRight || !reachRightScreen())) {
+                this.Transform.translate(deltaX, 0);
+            }
         }
 
         private void Flip()
@@ -95,13 +117,13 @@ namespace Shard
 
                 if ( inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
                 {
-                    this.move(speed);
+                    this.move(speed, background);
                     background.updateBackgroundPosition(this);
                 }
 
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
                 {
-                    this.move(-speed);
+                    this.move(-speed, background);
                     background.updateBackgroundPosition(this);
                 }
 

@@ -10,7 +10,7 @@ namespace Shard
     {
         public Ground() {
             this.Transform.X = 0; 
-            this.Transform.Y = 818.0f;
+            this.Transform.Y = 918.0f;
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("missilecommandback.png");
 
             setPhysicsEnabled();
