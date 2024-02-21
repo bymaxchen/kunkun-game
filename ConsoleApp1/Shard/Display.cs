@@ -85,6 +85,8 @@ namespace Shard
         public abstract void clearDisplay();
         public abstract void display();
 
+        public abstract void display(Camera camera);
+
         public abstract void showText(string text, double x, double y, int size, int r, int g, int b);
         public abstract void showText(char[,] text, double x, double y, int size, int r, int g, int b);
     }

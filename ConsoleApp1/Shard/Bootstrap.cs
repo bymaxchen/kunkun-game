@@ -314,7 +314,7 @@ namespace Shard
                 }
 
                 // Render the screen.
-                Bootstrap.getDisplay().display();
+                Bootstrap.getDisplay().display(runningGame.camera);
 
                 timeInMillisecondsEnd = getCurrentMillis();
 

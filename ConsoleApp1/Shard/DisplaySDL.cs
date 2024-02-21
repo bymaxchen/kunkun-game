@@ -204,7 +204,7 @@ namespace Shard
             _linesToDraw.Add(l);
         }
 
-        public override void display()
+        public override void display(Camera camera)
         {
 
             SDL.SDL_Rect sRect;
@@ -227,8 +227,17 @@ namespace Shard
                 sRect.w = (int)(trans.Wid * trans.Scalex);
                 sRect.h = (int)(trans.Ht * trans.Scaley);
 
-                tRect.x = (int)trans.X;
-                tRect.y = (int)trans.Y;
+                if (camera != null)
+                {
+                    tRect.x = (int)(trans.X - camera.X);
+                    tRect.y = (int)(trans.Y - camera.Y);
+                }
+                else {
+                    tRect.x = (int)trans.X;
+                    tRect.y = (int)trans.Y;
+                }
+
+
                 tRect.w = sRect.w;
                 tRect.h = sRect.h;
 
@@ -249,9 +258,8 @@ namespace Shard
 
             // Show it off.
             base.display();
-
-
         }
+
 
         public override void clearDisplay()
         {

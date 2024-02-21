@@ -15,7 +15,12 @@ namespace Shard
         public bool IsJumping { get; set; }
         public float speed = 5.0f; // Adjust speed as needed
         private bool facingRight = true;
-        private int width = 128;
+
+        private bool isDPressed = false;
+        private bool isAPressed = false;
+        private bool isWPressed = false;
+
+
 
         public bool isFacingRight
         {
@@ -29,6 +34,7 @@ namespace Shard
 
             this.Transform.X = 100.0f;
             this.Transform.Y = 818.0f;
+            this.Transform2D.Wid = 128;
 
             setPhysicsEnabled();
 
@@ -37,21 +43,16 @@ namespace Shard
             MyBody.Drag = 0f;
             MyBody.UsesGravity = true;
             MyBody.StopOnCollision = true;
+            MyBody.addRectCollider();
+
 
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("heizi.png");
-            MyBody.addRectCollider();
+
 
             addTag("Character");
         }
 
         // To judge if the center of charcter is located at the right screen
-        public Boolean reachRightScreen() {
-            int screenWidth = Bootstrap.getDisplay().getWidth();
-            if (this.Transform.X + this.width / 2 >= screenWidth / 2) { 
-                return true;
-            }
-            return false; 
-        }
 
         public void move(float deltaX, Background background)
         {
@@ -70,14 +71,16 @@ namespace Shard
                 return;
             }
 
-            if (facingRight && background.isLastScreen() && this.Transform.X <= Bootstrap.getDisplay().getWidth() - this.width)
+            this.Transform.translate(deltaX, 0);
+
+/*            if (facingRight && background.isLastScreen() && this.Transform.X <= Bootstrap.getDisplay().getWidth() - this.width)
             {
                 this.Transform.translate(deltaX, 0);
             }
 
             if ((!facingRight || !reachRightScreen())) {
                 this.Transform.translate(deltaX, 0);
-            }
+            }*/
         }
 
         private void Flip()
@@ -110,28 +113,81 @@ namespace Shard
                 return;
             }
 
+
+            if (eventType == "KeyUp") {
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
+                {
+                    this.isAPressed = false;
+                }
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W)
+                {
+                    this.isWPressed = false;
+                }
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
+                {
+                    this.isDPressed = false;
+                }
+            }
+
             if (IsJumping) return;
 
             if (eventType == "KeyDown")
             {
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
+                {
+                    this.isAPressed = true;
+                }
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W)
+                {
+                    this.isWPressed = true;
+                }
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
+                {
+                    this.isDPressed = true;
+                }
+                if (!isWPressed)
+                {
+                    if (isDPressed) // move foward
+                    {
+                        this.move(speed, background);
+                    }
+                    else if (isAPressed) // move backfoward
+                    {
+                        this.move(-speed, background);
+                    }
 
-                if ( inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
+                }
+                else {
+                    IsJumping = true;
+                    MyBody.stopForces();
+                    if (isDPressed) // jump foward
+                    {
+                        MyBody.addForce(new Vector2(0.5f, -1), 3);
+                    }
+                    else if (isAPressed) // jump backfoward
+                    {
+                        MyBody.addForce(new Vector2(-0.5f, -1), 3);
+                    }
+                    else { // jump vertically
+                        MyBody.addForce(new Vector2(0, -1), 3);
+                    }
+                }
+
+/*                if ( inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
                 {
                     this.move(speed, background);
-                    background.updateBackgroundPosition(this);
                 }
 
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
                 {
                     this.move(-speed, background);
-                    background.updateBackgroundPosition(this);
                 }
 
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W) {
                     IsJumping = true;
                     MyBody.stopForces();
                     MyBody.addForce(new Vector2(0, -1), 3);
-                }
+                }*/
 
             }
 

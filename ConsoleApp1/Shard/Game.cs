@@ -15,6 +15,8 @@ namespace Shard
     {
         public AssetManagerBase assets;
 
+        public Camera camera;
+
         public AssetManagerBase getAssetManager() {
             if (assets == null) {
                 assets = Bootstrap.getAssetManager();

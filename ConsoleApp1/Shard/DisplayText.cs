@@ -134,6 +134,11 @@ namespace Shard
             draw();
         }
 
+        public override void display(Camera camera)
+        {
+
+        }
+
         public override void setFullscreen()
         {
             SDL.SDL_SetWindowFullscreen(_window,

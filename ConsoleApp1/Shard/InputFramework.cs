@@ -99,13 +99,14 @@ namespace Shard
                 if (ev.type == SDL.SDL_EventType.SDL_KEYDOWN)
                 {
                     ie.Key = (int)ev.key.keysym.scancode;
-                    Debug.getInstance().log("Keydown: " + ie.Key);
+                    Debug.getInstance().log("KeyDown: " + ie.Key);
                     informListeners(ie, "KeyDown");
                 }
 
                 if (ev.type == SDL.SDL_EventType.SDL_KEYUP)
                 {
                     ie.Key = (int)ev.key.keysym.scancode;
+                    Debug.getInstance().log("KeyUp: " + ie.Key);
                     informListeners(ie, "KeyUp");
                 }
 
