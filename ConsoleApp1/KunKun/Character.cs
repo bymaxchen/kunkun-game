@@ -14,6 +14,10 @@ namespace Shard
         public Vector2 jumpDirction { get; set; }
         public bool IsJumping { get; set; }
         public float speed = 5.0f; // Adjust speed as needed
+
+        public int width = 128;
+        public int height = 128;
+
         private bool facingRight = true;
 
         private bool isDPressed = false;
@@ -173,24 +177,34 @@ namespace Shard
                     }
                 }
 
-/*                if ( inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
+
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE)
                 {
-                    this.move(speed, background);
+                    fireBasketball();
                 }
-
-                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
-                {
-                    this.move(-speed, background);
-                }
-
-                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W) {
-                    IsJumping = true;
-                    MyBody.stopForces();
-                    MyBody.addForce(new Vector2(0, -1), 3);
-                }*/
-
             }
 
+
+        }
+
+        public void fireBasketball() { 
+            Basketball basketball = new Basketball();
+
+            float x, y;
+            int dir;
+
+            y = this.Transform.Y + this.height / 2 - basketball.Height / 2;
+            if (facingRight)
+            {
+                x = this.Transform.X + this.width;
+                dir = 1;
+            }
+            else {
+                x = this.Transform.X - basketball.Width;
+                dir = -1;
+            }
+
+            basketball.setupBasketball(x, y, dir);
         }
 
         public void onCollisionEnter(PhysicsBody x)
