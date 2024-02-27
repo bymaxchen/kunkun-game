@@ -12,9 +12,12 @@ namespace Shard
         private string destroyTag;
         private int dir;
 
-        private int width;  
-        private int height;
+        private readonly int width = 48;  
+        private readonly int height = 48;
 
+        public readonly int maxRange = 250; // basketball's max range
+
+        private float initalX;
 
         public int Width { get { return width; } }
         public int Height { get { return height; } }
@@ -25,6 +28,7 @@ namespace Shard
         {
             this.Transform.X = x;
             this.Transform.Y = y;
+            this.initalX = x;
 
 
             this.dir = dir;
@@ -38,15 +42,19 @@ namespace Shard
 
         public override void initialize()
         {
-            this.width = 48;
-            this.height = 48;
-            this.Transient = true;
+
+            this.Transient = false;
             this.Transform.SpritePath = Bootstrap.getAssetManager().getAssetPath("basketball.png");
 
         }
 
         public override void update()
         {
+            if (Math.Abs(this.Transform.X - this.initalX) > maxRange)
+            {
+                this.ToBeDestroyed = true;
+                return;
+            }
             this.Transform.translate(dir * 400 * Bootstrap.getDeltaTime(), 0);
 
             Bootstrap.getDisplay().addToDraw(this);
@@ -54,6 +62,7 @@ namespace Shard
 
         public void onCollisionEnter(PhysicsBody x)
         {
+            this.ToBeDestroyed = true;
         }
 
         public void onCollisionExit(PhysicsBody x)

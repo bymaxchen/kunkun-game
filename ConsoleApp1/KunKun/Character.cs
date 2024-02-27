@@ -24,6 +24,8 @@ namespace Shard
         private bool isAPressed = false;
         private bool isWPressed = false;
 
+        private Basketball currentBasketball = null;
+
 
 
         public bool isFacingRight
@@ -56,16 +58,10 @@ namespace Shard
             addTag("Character");
         }
 
-        // To judge if the center of charcter is located at the right screen
-
         public void move(float deltaX, Background background)
         {
             if (IsJumping) return;
 
-            if (deltaX > 0 && !facingRight)
-            {
-                Flip();
-            }
             else if (deltaX < 0 && facingRight)
             {
                 Flip();
@@ -76,15 +72,6 @@ namespace Shard
             }
 
             this.Transform.translate(deltaX, 0);
-
-/*            if (facingRight && background.isLastScreen() && this.Transform.X <= Bootstrap.getDisplay().getWidth() - this.width)
-            {
-                this.Transform.translate(deltaX, 0);
-            }
-
-            if ((!facingRight || !reachRightScreen())) {
-                this.Transform.translate(deltaX, 0);
-            }*/
         }
 
         private void Flip()
@@ -133,13 +120,22 @@ namespace Shard
                 }
             }
 
-            if (IsJumping) return;
+            if (eventType == "KeyDown") {
+                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE)
+                {
+                    fireBasketball();
+                }
+            }
 
             if (eventType == "KeyDown")
             {
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_A)
                 {
                     this.isAPressed = true;
+                    if (facingRight)
+                    {
+                        Flip();
+                    }
                 }
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_W)
                 {
@@ -148,7 +144,14 @@ namespace Shard
                 if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_D)
                 {
                     this.isDPressed = true;
+                    if (!facingRight)
+                    {
+                        Flip();
+                    }
                 }
+
+                if (IsJumping) return;
+
                 if (!isWPressed)
                 {
                     if (isDPressed) // move foward
@@ -176,35 +179,32 @@ namespace Shard
                         MyBody.addForce(new Vector2(0, -1), 3);
                     }
                 }
-
-
-                if (inp.Key == (int)SDL.SDL_Scancode.SDL_SCANCODE_SPACE)
-                {
-                    fireBasketball();
-                }
             }
 
 
         }
 
         public void fireBasketball() { 
-            Basketball basketball = new Basketball();
+            if (this.currentBasketball != null && !this.currentBasketball.ToBeDestroyed) {
+                return;
+            }
+            this.currentBasketball = new Basketball();
 
             float x, y;
             int dir;
 
-            y = this.Transform.Y + this.height / 2 - basketball.Height / 2;
+            y = this.Transform.Y + this.height / 2 - currentBasketball.Height / 2;
             if (facingRight)
             {
                 x = this.Transform.X + this.width;
                 dir = 1;
             }
             else {
-                x = this.Transform.X - basketball.Width;
+                x = this.Transform.X - currentBasketball.Width;
                 dir = -1;
             }
 
-            basketball.setupBasketball(x, y, dir);
+            this.currentBasketball.setupBasketball(x, y, dir);
         }
 
         public void onCollisionEnter(PhysicsBody x)

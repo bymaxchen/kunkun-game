@@ -32,7 +32,7 @@ namespace SpaceInvaders
 
         public override void initialize()
         {
-            this.Transient = true;
+/*            this.Transient = true;*/
         }
 
 

@@ -69,13 +69,14 @@ namespace Shard
         {
             List<int> toDestroy = new List<int>();
             GameObject gob;
+
             for (int i = 0; i < myObjects.Count; i++)
             {
                 gob = myObjects[i];
 
                 gob.update();
 
-                gob.checkDestroyMe();
+                gob.checkDestroyMe(i);
 
                 if (gob.ToBeDestroyed == true)
                 {
@@ -90,7 +91,6 @@ namespace Shard
                     gob = myObjects[toDestroy[i]];
                     myObjects[toDestroy[i]].killMe();
                     myObjects.RemoveAt(toDestroy[i]);
-
                 }
             }
 

@@ -121,9 +121,8 @@ namespace Shard
 
         }
 
-        public void checkDestroyMe()
+        public void checkDestroyMe(int i)
         {
-
             if (!transient)
             {
                 return;
@@ -137,9 +136,7 @@ namespace Shard
                 }
             }
 
-
             ToBeDestroyed = true;
-
         }
 
         public virtual void killMe()
